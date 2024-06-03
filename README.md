@@ -73,7 +73,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 # Netflix GPT
  - Create react app
  - configured Tailwind css
-
+ - Header
+ - Routing of app
+ - Login Form
+ - sign up-form
+ - validation 
+ - useRef Hook
+ - firebase setup
+ - deploying our app to production
+ - create signup user account in firebase
+ - implement sign in user APi
+ - created Redux store with userSlice
 
 # Features
  - Login/Sign Up page
@@ -89,3 +99,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - NetflixGPT
     - Search bar
     - Movie Suggestions
+
+
+# production Url = https://netflixgpt-abafe.web.app/
+
+# steps/commands to login and deploy in firebase
+
+- firebase login --> to login to firebase
+- firebase init --> initialize firebase in the project
+- firebase deploy --> deploy the application . (build the app before deploying)

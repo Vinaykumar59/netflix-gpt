@@ -1,11 +1,101 @@
 // rafce - react arrow function export constany
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile 
+} from "firebase/auth";
+import { validate } from "../utils/ValidateForm";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { addUser } from '../utils/userSlice'
+
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const name = useRef(null);
+  const Email = useRef(null);
+  const password = useRef(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const toggleSignForm = () => {
     setIsSignInForm(!isSignInForm);
   };
+
+  const handleForm = () => {
+    const formValid = validate(Email.current.value, password.current.value);
+    setErrorMessage(formValid);
+
+    if (errorMessage) return;
+
+    if (!isSignInForm) {
+      //signup logic for a new user
+      createUserWithEmailAndPassword(
+        auth,
+        Email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: "blob:https://www.naukri.com/d2f0eb43-eb9a-4257-b6e7-2d4e28c203a9"
+          }).then(() => {
+            // Profile updated!
+            const { uid, email, displayName, photoURL } = auth.currentUser;
+
+            dispatch(addUser({
+              uid: uid,
+              email: email,
+              displayName: displayName,
+              photoURL : photoURL
+            }))
+            navigate('/browse')
+
+          }).catch((error) => {
+            // An error occurred
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(errorCode + "-" + errorMessage);
+  
+          });
+          // Signed up
+          // const user = userCredential.user;
+          // console.log("user", user);
+          // navigate('/browse')
+
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      // sign in logic for existing user
+      signInWithEmailAndPassword(
+        auth,
+        Email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log('user logged in', user);
+          navigate('/browse')
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
+  };
+
   return (
     <div className="relative ">
       <Header />
@@ -15,16 +105,45 @@ const Login = () => {
           alt="form"
         />
       </div>
-      <form className="absolute top-1/4 left-1/3 flex flex-col gap-2 p-3 bg-black bg-opacity-75 text-white">
-       <h1>{isSignInForm ? "Sign In" : "Sign Up"}</h1>
-       { !isSignInForm &&
-                <input type="text" placeholder="Full Name" className="p-2 m-2 border rounded-sm border-black bg-gray-700"/>
-
-       }
-        <input type="text" placeholder="Email" className="p-2 m-2 border rounded-sm border-black bg-gray-700"/>
-        <input type="text" placeholder="Password" className="p-2 m-2 rounded-sm border-black bg-gray-700"/>
-        <button type="submit" className="p-2 m-2 rounded-sm border-black bg-red-600">{isSignInForm ? "Sign In" : "Sign Up"}</button>
-        <p className="text-sm cursor-pointer" onClick={toggleSignForm}>{isSignInForm ? "New to Netflix? Sign Up Now" : "Already a member? Sign In Now"}</p>
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="absolute top-1/4 left-1/3 flex flex-col gap-2 p-3 bg-black bg-opacity-75 text-white"
+      >
+        <h1>{isSignInForm ? "Sign In" : "Sign Up"}</h1>
+        {!isSignInForm && (
+          <input
+            ref={name}
+            type="text"
+            placeholder="Full Name"
+            className="p-2 m-2 border rounded-sm border-black bg-gray-700"
+          />
+        )}
+        <input
+          ref={Email}
+          type="text"
+          placeholder="Email"
+          className="p-2 m-2 border rounded-sm border-black bg-gray-700"
+        />
+        <input
+          ref={password}
+          type="password"
+          placeholder="Password"
+          className="p-2 m-2 rounded-sm border-black bg-gray-700"
+        />
+        {errorMessage && (
+          <p className="text-red-700 text-lg p-2 font-bold">{errorMessage}</p>
+        )}
+        <button
+          className="p-2 m-2 rounded-sm border-black bg-red-600"
+          onClick={handleForm}
+        >
+          {isSignInForm ? "Sign In" : "Sign Up"}
+        </button>
+        <p className="text-sm cursor-pointer" onClick={toggleSignForm}>
+          {isSignInForm
+            ? "New to Netflix? Sign Up Now"
+            : "Already a member? Sign In Now"}
+        </p>
       </form>
     </div>
   );
