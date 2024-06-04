@@ -84,7 +84,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
  - create signup user account in firebase
  - implement sign in user APi
  - created Redux store with userSlice
-
+ - implemented signout 
+ - implemented update profile
+ - fetch movies from TMDB 
+ 
 # Features
  - Login/Sign Up page
     - Sign In / Sign up form
