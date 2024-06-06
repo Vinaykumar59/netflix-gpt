@@ -86,7 +86,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
  - created Redux store with userSlice
  - implemented signout 
  - implemented update profile
+ - Bugfix: signup user displayName
+ - bugfix: if the user is logged in direct to '/browse' and if not logged in direct to '/login' pages
+ - Unsubscribe to the onAuthStateChanged callback
  - fetch movies from TMDB 
+ - Add hardcoded values to the constants file
+ - build videoComponent 
+    - video title component
+    - video trailer component
+ - fetch video trailer for a movie
+ - embed youtube video into video background with autoplay
  
 # Features
  - Login/Sign Up page

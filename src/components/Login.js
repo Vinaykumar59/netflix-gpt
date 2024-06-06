@@ -8,17 +8,15 @@ import {
 } from "firebase/auth";
 import { validate } from "../utils/ValidateForm";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { addUser } from '../utils/userSlice'
-
+import { USER_AVATAR } from "../utils/constants";
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const name = useRef(null);
   const Email = useRef(null);
   const password = useRef(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const toggleSignForm = () => {
@@ -43,7 +41,7 @@ const Login = () => {
 
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL: "blob:https://www.naukri.com/d2f0eb43-eb9a-4257-b6e7-2d4e28c203a9"
+            photoURL: USER_AVATAR
           }).then(() => {
             // Profile updated!
             const { uid, email, displayName, photoURL } = auth.currentUser;
@@ -54,7 +52,6 @@ const Login = () => {
               displayName: displayName,
               photoURL : photoURL
             }))
-            navigate('/browse')
 
           }).catch((error) => {
             // An error occurred
@@ -63,10 +60,6 @@ const Login = () => {
             setErrorMessage(errorCode + "-" + errorMessage);
   
           });
-          // Signed up
-          // const user = userCredential.user;
-          // console.log("user", user);
-          // navigate('/browse')
 
         })
         .catch((error) => {
@@ -85,8 +78,6 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log('user logged in', user);
-          navigate('/browse')
-          // ...
         })
         .catch((error) => {
           const errorCode = error.code;

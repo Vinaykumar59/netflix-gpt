@@ -1,10 +1,25 @@
 import React from "react";
 import Header from "./Header";
+import useNowPlayingMovies from "../Hooks/useNowPlayingMovies"
+import VideoMainContainer from "./VideoMainContainer"
+import RecommendationsContainer from "./RecommendationsContainer"
+
 const Browse = () => {
+  useNowPlayingMovies();
+
   return (
-    <div>
+    <div >
       <Header />
-      <p className="pt-24">Browse</p>
+      {/* {
+        MainCotainer
+          - video background
+          - Video Tutle
+        secondaryContainer
+          -MoviesList * n
+            - cards * n
+      } */}
+      <VideoMainContainer/>
+      <RecommendationsContainer />
     </div>
   );
 };
